@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,8 @@ body{
   font-family:Segoe UI, sans-serif;
   text-align:center;
   color:white;
+  background:linear-gradient(to top,#ff758c,#ff7eb3);
+  position:relative;
 }
 
 /* Glowing Name */
@@ -34,7 +36,7 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  z-index:1;
+  z-index:10;
 }
 
 input,button{
@@ -58,6 +60,9 @@ input,button{
   width:220px;
   border-radius:20px;
   margin-top:15px;
+  opacity:1;
+  transition: opacity 1s ease-in-out;
+  z-index:5;
 }
 
 #letter{
@@ -69,27 +74,46 @@ input,button{
   border-radius:15px;
   text-align:left;
   min-height:120px;
-  z-index:3;
+  z-index:6;
 }
 
 #proposal{
   display:none;
   font-size:22px;
   margin-top:15px;
-  z-index:3;
+  z-index:6;
 }
 
 #videoContainer{
   display:none;
   margin-top:15px;
+  z-index:6;
 }
 
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  pointer-events:none;
-  z-index:4;
+/* Video overlay button with glow, pulse & float */
+#videoOverlay{
+  display:none;
+  cursor:pointer;
+  color:white;
+  background:red;
+  padding:10px 15px;
+  border-radius:10px;
+  margin-top:10px;
+  font-size:18px;
+  animation:glowPulse 1.5s infinite alternate, floatButton 2s infinite alternate;
+  z-index:7;
+}
+
+@keyframes glowPulse{
+  0% {box-shadow:0 0 5px pink; transform:scale(1);}
+  50% {box-shadow:0 0 15px #ff69b4; transform:scale(1.05);}
+  100% {box-shadow:0 0 5px pink; transform:scale(1);}
+}
+
+@keyframes floatButton{
+  0% {transform:translateY(0);}
+  50% {transform:translateY(-8px);}
+  100% {transform:translateY(0);}
 }
 
 /* Floating hearts */
@@ -98,7 +122,7 @@ canvas{
   bottom:-20px;
   font-size:18px;
   animation:float 6s linear infinite;
-  z-index:3;
+  z-index:1;
 }
 
 @keyframes float{
@@ -132,7 +156,7 @@ canvas{
   </div>
 
   <div id="videoContainer">
-    <button id="playVideoBtn">Tap for Surprise Video 🎬</button>
+    <div id="videoOverlay">Tap for Surprise Video 🎬</div>
     <video id="surpriseVideo" width="320" height="240" controls style="display:none; margin-top:10px;">
       <source src="video.mp4" type="video/mp4">
     </video>
@@ -141,12 +165,11 @@ canvas{
   <button onclick="toggleMusic()">🎵 Play / Pause</button>
 </div>
 
-<!-- Music autoplay from start -->
 <audio id="music" autoplay loop>
   <source src="AisaKyon.mp3" type="audio/mpeg">
 </audio>
 
-<canvas id="fireworks"></canvas>
+<canvas id="celebrationCanvas"></canvas>
 
 <script>
 
@@ -191,20 +214,25 @@ heart.onclick=function(){
     
     typeLetter();
     startFireworks();
+    startConfetti();
 
-    // Start slideshow after 3 seconds of letter start
+    setTimeout(()=>{document.getElementById("videoOverlay").style.display="block";}, 3000);
     setTimeout(startSlideshow, 3000);
   }
 }
 
-/* Slideshow */
-let photos=["photo1.jpg","photo2.jpg","photo3.jpg"];
+/* Slideshow with fade for 10 pics */
+let photos=["photo1.jpg","photo2.jpg","photo3.jpg","photo5.jpg","photo6.jpg","photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg"];
 let index=0;
 function startSlideshow(){
   setInterval(()=>{
-    index=(index+1)%photos.length;
-    photoSlider.src=photos[index];
-  },2000);
+    photoSlider.style.opacity=0;
+    setTimeout(()=>{
+      index=(index+1)%photos.length;
+      photoSlider.src=photos[index];
+      photoSlider.style.opacity=1;
+    },1000);
+  },3000);
 }
 
 /* Full Emotional Letter */
@@ -231,28 +259,36 @@ function typeLetter(){
     letter.innerHTML+=text.charAt(i);
     i++;
     setTimeout(typeLetter,40);
-  } else {
-    // Letter finished → show video button
-    document.getElementById("videoContainer").style.display="block";
   }
 }
 
-/* Floating Hearts */
+/* Floating Hearts Background - Dynamic Colors */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="floating";
   h.innerText="💖";
-  h.style.left=Math.random()*window.innerWidth+"px";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},700);
 
-/* Fireworks */
-let canvas=document.getElementById("fireworks");
+  h.style.left=Math.random()*window.innerWidth+"px";
+  h.style.fontSize=(12+Math.random()*20)+"px";
+
+  // Random dynamic color
+  let hue=Math.floor(Math.random()*360);
+  h.style.filter=`hue-rotate(${hue}deg)`;
+
+  h.style.animationDuration=(4+Math.random()*4)+"s";
+  document.body.appendChild(h);
+
+  setTimeout(()=>h.remove(),8000);
+},300);
+
+/* Celebration Canvas */
+let canvas=document.getElementById("celebrationCanvas");
 let ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
+/* Fireworks + Confetti */
+let confettis=[];
 function startFireworks(){
   for(let i=0;i<80;i++){
     ctx.fillStyle="yellow";
@@ -263,18 +299,58 @@ function startFireworks(){
     ctx.fill();
   }
 }
+function startConfetti(){
+  for(let i=0;i<150;i++){
+    confettis.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r:2+Math.random()*6,
+      d:Math.random()*20,
+      color:`hsl(${Math.random()*360},100%,50%)`,
+      sparkle: Math.random()*0.8+0.2
+    });
+  }
+  requestAnimationFrame(drawConfetti);
+}
+
+function drawConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+  // Fireworks sparkles
+  for(let i=0;i<80;i++){
+    ctx.fillStyle=`hsl(${Math.random()*60+40},100%,50%)`;
+    ctx.beginPath();
+    ctx.arc(Math.random()*canvas.width,
+            Math.random()*canvas.height/2,
+            3*Math.random(),0,Math.PI*2);
+    ctx.fill();
+  }
+  
+  // Confetti sparkle
+  for(let i=0;i<confettis.length;i++){
+    let c = confettis[i];
+    ctx.fillStyle=`rgba(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${c.sparkle})`;
+    ctx.fillRect(c.x,c.y,c.r,c.r*2);
+    c.y+=0.5+Math.random()*2;
+    c.x+=Math.sin(c.d)*0.5;
+    if(c.y>canvas.height){c.y=0;c.x=Math.random()*canvas.width;}
+  }
+  requestAnimationFrame(drawConfetti);
+}
 
 /* Proposal */
 function sheSaidYes(){
   alert("She Said YESSS 😍💖 Forever Yours!");
 }
 
-/* Video Button */
-document.getElementById("playVideoBtn").onclick = function() {
+/* Video Button / Overlay */
+document.getElementById("videoOverlay").onclick = function() {
   let vid = document.getElementById("surpriseVideo");
   vid.style.display = "block";
-  vid.play();
-  this.style.display = "none"; // hide button after tapped
+  vid.play().catch(err=>{
+    console.log("Video play blocked, user must tap manually",err);
+  });
+  this.style.display="none";
 }
 
 /* Music Toggle */
