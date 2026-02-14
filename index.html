@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Sudhiksha 💖</title>
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Segoe UI, sans-serif;
+  text-align:center;
+  color:white;
+}
+
+/* Glowing Name */
+.glow{
+  font-size:28px;
+  margin-top:20px;
+  animation:glow 1.5s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px pink;}
+  to{text-shadow:0 0 25px red;}
+}
+
+/* Password screen */
+#passwordScreen{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:linear-gradient(to right,#ff758c,#ff7eb3);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:1;
+}
+
+input,button{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin-top:10px;
+}
+
+/* Game content */
+#gameContent{display:none; z-index:2;}
+
+#heart{
+  position:absolute;
+  font-size:40px;
+  cursor:pointer;
+}
+
+#photoSlider{
+  display:none;
+  width:220px;
+  border-radius:20px;
+  margin-top:15px;
+}
+
+#letter{
+  display:none;
+  max-width:90%;
+  margin:20px auto;
+  background:rgba(0,0,0,0.7);
+  padding:15px;
+  border-radius:15px;
+  text-align:left;
+  min-height:120px;
+  z-index:3;
+}
+
+#proposal{
+  display:none;
+  font-size:22px;
+  margin-top:15px;
+  z-index:3;
+}
+
+#videoContainer{
+  display:none;
+  margin-top:15px;
+}
+
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  pointer-events:none;
+  z-index:4;
+}
+
+/* Floating hearts */
+.floating{
+  position:fixed;
+  bottom:-20px;
+  font-size:18px;
+  animation:float 6s linear infinite;
+  z-index:3;
+}
+
+@keyframes float{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-100vh);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="passwordScreen">
+  <h2>Enter Secret Password 💕</h2>
+  <input type="password" id="passwordInput" placeholder="Enter password">
+  <button onclick="checkPassword()">Enter</button>
+</div>
+
+<div id="gameContent">
+  <div class="glow">Sudhiksha 💖</div>
+  <h3>Catch My Love 💕</h3>
+  <div id="score">Score: 0</div>
+  <div id="heart">❤️</div>
+
+  <img id="photoSlider" src="photo1.jpg">
+
+  <div id="letter"></div>
+
+  <div id="proposal">
+    💍 Will You Be Mine Forever? 💖<br>
+    <button onclick="sheSaidYes()">YES 💕</button>
+  </div>
+
+  <div id="videoContainer">
+    <button id="playVideoBtn">Tap for Surprise Video 🎬</button>
+    <video id="surpriseVideo" width="320" height="240" controls style="display:none; margin-top:10px;">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <button onclick="toggleMusic()">🎵 Play / Pause</button>
+</div>
+
+<!-- Music autoplay from start -->
+<audio id="music" autoplay loop>
+  <source src="AisaKyon.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<script>
+
+/* Password */
+function checkPassword(){
+  if(document.getElementById("passwordInput").value==="motuu"){
+    document.getElementById("passwordScreen").style.display="none";
+    document.getElementById("gameContent").style.display="block";
+  }else{
+    alert("Wrong password 😜");
+  }
+}
+
+/* Game */
+let heart=document.getElementById("heart");
+let scoreText=document.getElementById("score");
+let photoSlider=document.getElementById("photoSlider");
+let letter=document.getElementById("letter");
+let proposal=document.getElementById("proposal");
+
+let score=0;
+
+function moveHeart(){
+  heart.style.left=Math.random()*(window.innerWidth-50)+"px";
+  heart.style.top=Math.random()*(window.innerHeight-50)+"px";
+}
+moveHeart();
+
+heart.onclick=function(){
+  score++;
+  scoreText.innerText="Score: "+score;
+  moveHeart();
+  if(score>=10){
+    heart.style.display="none";
+    
+    // Show "congratulations" photo first
+    photoSlider.src="photo4.jpg";
+    photoSlider.style.display="block";
+    
+    letter.style.display="block";
+    proposal.style.display="block";
+    
+    typeLetter();
+    startFireworks();
+
+    // Start slideshow after 3 seconds of letter start
+    setTimeout(startSlideshow, 3000);
+  }
+}
+
+/* Slideshow */
+let photos=["photo1.jpg","photo2.jpg","photo3.jpg"];
+let index=0;
+function startSlideshow(){
+  setInterval(()=>{
+    index=(index+1)%photos.length;
+    photoSlider.src=photos[index];
+  },2000);
+}
+
+/* Full Emotional Letter */
+const text=`My Dearest Sudhiksha,
+
+I’m sitting here in the quiet, and for some reason, the thought of you just hit me harder than usual. I started thinking about my life before you, and honestly, it feels like a grainy, silent movie. Then you walked in, and suddenly there was color, there was music, and there was a reason to actually look forward to tomorrow.
+
+I don’t think I tell you this enough, but the way you love me is the most humbling thing I’ve ever experienced. I know I’m not perfect. I know I have my bad days, my silences, and my flaws — but you look at me as if I’m the best thing that ever happened to you. Every time I catch you looking at me like that, it breaks me and heals me all at the same time.
+
+Sudhiksha, you are my safe harbor. When the world feels too loud and everything is moving too fast, I just think of your smile or the way your hand feels in mine, and everything slows down. You are the only person who truly sees me — not the version I show the world, but the real me, the messy me. And you stayed. You chose me. You keep choosing me.
+
+I want you to know that I don't take a single second of us for granted. I love the way your eyes light up when you’re excited, the way you say my name, and even the way you challenge me to be a better man. You aren’t just my girlfriend; you are my heart living outside of my chest.
+
+If I could give you one thing in this life, I would give you the ability to see yourself through my eyes. Only then would you realize how breathtaking you truly are — not just on the outside, but the depth of your soul and the kindness you carry.
+
+Thank you for being my home. Thank you for loving me when I didn't know how to love myself. I am yours, completely and forever, through every high and every low.
+
+Always yours,
+Arpit ❤️`;
+
+let i=0;
+function typeLetter(){
+  if(i<text.length){
+    letter.innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(typeLetter,40);
+  } else {
+    // Letter finished → show video button
+    document.getElementById("videoContainer").style.display="block";
+  }
+}
+
+/* Floating Hearts */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="floating";
+  h.innerText="💖";
+  h.style.left=Math.random()*window.innerWidth+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},700);
+
+/* Fireworks */
+let canvas=document.getElementById("fireworks");
+let ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function startFireworks(){
+  for(let i=0;i<80;i++){
+    ctx.fillStyle="yellow";
+    ctx.beginPath();
+    ctx.arc(Math.random()*canvas.width,
+            Math.random()*canvas.height/2,
+            4,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+/* Proposal */
+function sheSaidYes(){
+  alert("She Said YESSS 😍💖 Forever Yours!");
+}
+
+/* Video Button */
+document.getElementById("playVideoBtn").onclick = function() {
+  let vid = document.getElementById("surpriseVideo");
+  vid.style.display = "block";
+  vid.play();
+  this.style.display = "none"; // hide button after tapped
+}
+
+/* Music Toggle */
+function toggleMusic(){
+  let music=document.getElementById("music");
+  if(music.paused){music.play();}
+  else{music.pause();}
+}
+
+</script>
+</body>
+</html>
